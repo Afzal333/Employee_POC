@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -32,7 +33,11 @@ import com.veltris.employee.service.EmployeeService;
  * The service is mocked, so we can drive it to throw and assert the HTTP
  * status codes and error body the API returns for failures.
  */
+// addFilters = false disables the Spring Security filter chain so these tests stay
+// focused on controller validation / error behavior. Security is covered separately
+// in SecurityIntegrationTest.
 @WebMvcTest(EmployeeController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class EmployeeControllerTest {
 
     @Autowired

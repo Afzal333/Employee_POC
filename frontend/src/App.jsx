@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from 'react'
 import EmployeeForm from './components/EmployeeForm'
 import EmployeeTable from './components/EmployeeTable'
+import Login from './components/Login'
+import { useAuth } from './auth/AuthContext'
 import {
   getEmployees,
   createEmployee,
@@ -8,7 +10,14 @@ import {
   deleteEmployee,
 } from './api/employeeApi'
 
+// Auth gate: show the login screen until the user is authenticated.
 function App() {
+  const { isAuthenticated } = useAuth()
+  return isAuthenticated ? <EmployeeManager /> : <Login />
+}
+
+function EmployeeManager() {
+  const { username, logout } = useAuth()
   const [employees, setEmployees] = useState([])
   const [editing, setEditing] = useState(null) // employee being edited, or null
   const [error, setError] = useState('')
@@ -67,9 +76,17 @@ function App() {
 
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>Employee Management</h1>
-        <p>Add, edit and remove employees</p>
+      <header className="app-header-bar">
+        <div>
+          <h1>Employee Management</h1>
+          <p>Add, edit and remove employees</p>
+        </div>
+        <div className="user-box">
+          <span className="user-badge">{username}</span>
+          <button className="btn btn-secondary btn-logout" onClick={logout}>
+            Logout
+          </button>
+        </div>
       </header>
 
       {error && <div className="alert alert-error">{error}</div>}
